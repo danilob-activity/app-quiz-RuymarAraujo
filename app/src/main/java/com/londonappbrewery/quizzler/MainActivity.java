@@ -61,8 +61,14 @@ public class MainActivity extends Activity {
         mProgressBar = findViewById(R.id.progress_bar);
 
         //valores iniciais
-        mIndex = 0;
-        mScore = 0;
+        if (savedInstanceState != null) {
+            mScore = savedInstanceState.getInt("ScoreKey");
+            mIndex = savedInstanceState.getInt("IndexKey");
+        //atualiza texto do score
+        } else {
+            mScore = 0;
+            mIndex = 0;
+        }
         mQuestion = mQuestionBank[mIndex].getQuestionID();
         mQuestionTextView.setText(mQuestion);
         mScoreTextView.setText(mScore+"/"+mQuestionBank.length);
@@ -146,4 +152,11 @@ public class MainActivity extends Activity {
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putInt("ScoreKey", mScore);
+        outState.putInt("IndexKey", mIndex);
+    }
 }
