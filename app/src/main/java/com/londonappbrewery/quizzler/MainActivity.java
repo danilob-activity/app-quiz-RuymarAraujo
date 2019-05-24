@@ -1,6 +1,8 @@
 package com.londonappbrewery.quizzler;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -43,6 +45,9 @@ public class MainActivity extends Activity {
             new TrueFalse(R.string.question_12, false),
             new TrueFalse(R.string.question_13,true)
     };
+
+    final int PROGRESS_BAR_INCREMENT = (int) Math.ceil(100.0 /
+            mQuestionBank.length);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,9 +112,37 @@ public class MainActivity extends Activity {
     }
 
     public void updateQuestion(){
+    mScoreTextView.setText("Score: "+mScore+"/"+mQuestionBank.length);
+    mIndex++;
+    mIndex %= mQuestionBank.length;
+    if (mIndex==0){
+        //encerrar o app
+        AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+        alert.setTitle("Game Over");
+        alert.setCancelable(false);
+        alert.setMessage("You scored " + mScore + " points!");
+        alert.setNegativeButton("Restart Application", new
+                DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mScore = 0;
+                        mProgressBar.setProgress(0);
+                        mScoreTextView.setText("Score: "+mScore+"/"+mQuestionBank.length);
+                    }
+                });
+        alert.setPositiveButton("Close Application", new
+                DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                });
+        alert.show();
+    }
+    mQuestion = mQuestionBank[mIndex].getQuestionID();
+    mQuestionTextView.setText(mQuestion);
 
-
-
+    mProgressBar.incrementProgressBy(PROGRESS_BAR_INCREMENT);
 
     }
 
